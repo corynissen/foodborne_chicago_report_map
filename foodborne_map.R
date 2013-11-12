@@ -27,7 +27,7 @@ for(i in 1:nrow(df)){
   geocode.list <- fromJSON(df$geocode.json[i])
     if(geocode.list$status=="OK"){
       if(!is.null(geocode.list$results)){
-        df$geocode[i] <-geocode.list$results
+        df$geocode[i] <-geocode.list$results[1]
         df$lat[i] <- ifelse(length(df$geocode[i]) > 0, 
                             df$geocode[i][[1]]$geometry$location["lat"], NA)
         df$lng[i] <- ifelse(length(df$geocode[i]) > 0, 
@@ -102,3 +102,12 @@ system(paste0("cd ", getwd(),
 # create animated gif
 system(paste0("cd ", getwd(), 
               "/for_animation2 && convert -delay 10 -loop 0 *.jpg animation.gif"))
+
+
+
+df$geocode.json[i] <- getURL(paste0(geocoder.url.google.1,
+                                    gsub(" ", "+", rest.address), geocoder.url.google.2))
+geocode.list <- fromJSON(df$geocode.json[i])
+df$geocode[i] <-geocode.list$results
+df$lat[i] <- ifelse(length(df$geocode[i]) > 0, 
+                    df$geocode[i][[1]]$geometry$location["lat"], NA)
