@@ -5,6 +5,7 @@
 # then stitch them all together for a mpeg / gif. Imagemagick is used to do 
 # this work. 
 #############################################################################
+
 library(ggplot2)
 library(OpenStreetMap)
 library(grid)
