@@ -48,7 +48,7 @@ p3 <- p2 + geom_polygon(aes(x = long, y = lat, group=group), alpha=.2, fill="bla
     coord_cartesian(xlim=c(-87.96, -87.5), ylim=c(41.62, 42.05))
 ggsave(plot=p3, "foodborne_p3.png", height=5, width=5)
 
-# now try with ggmaps and cloudmade
+# now try with ggmaps and cloudmade - API key needed for this one
 cloudmadekey <- scan("~/cn/personal/keys/cloudmadekey.txt", what="character")
 p4 <- qmap("chicago", source="cloudmade", api_key=cloudmadekey, maptype=108995)+
       geom_polygon(aes(x = long, y = lat, group=group), alpha=.2, fill="black", 
