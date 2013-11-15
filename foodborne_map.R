@@ -11,7 +11,8 @@ library(OpenStreetMap)
 library(grid)
 library(ggmap)
 library(rgdal)
-source("read_and_geocode.R") # will take a couple minutes to geocode
+# run if you haven't run it already...
+if(!exists("df")){source("read_and_geocode.R")} 
 
 # keep only ones near chicago...
 df2 <- subset(df, lat > 41.62 & lat < 42.05 & lng > -87.96 & lng < -87.5 
