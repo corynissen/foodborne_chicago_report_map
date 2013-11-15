@@ -31,19 +31,31 @@ p <- autoplot(mp) + geom_point(aes(x=merc[,1], y=merc[,2]), alpha=.7, size=10) +
 
 gt <- ggplot_gtable(ggplot_build(p))
 ge <- subset(gt$layout, name == "panel")
-png("foodborne_chicago_submissions.png", width=1433, height=1800)
+png("foodborne_p1.png", width=1433, height=1800)
 grid.draw(gt[ge$t:ge$b, ge$l:ge$r])
 dev.off()
 
-# same graph using ggmap package
-p2 <- qmap("chicago") + geom_point(data=df2, aes(x=lng, y=lat)) +
+# same graph using ggmap package with google maps
+p2 <- qmap("chicago", darken=.1) + geom_point(data=df2, aes(x=lng, y=lat)) +
     coord_cartesian(xlim=c(-87.96, -87.5), ylim=c(41.62, 42.05))
-ggsave(plot=p2, "foodborne_chicago_submissions2.png", height=5, width=5)
+ggsave(plot=p2, "foodborne_p2.png", height=5, width=5)
 
 # now add shapefile info
 shapefile <- readOGR("chicago_city_shapefiles", "City_Boundary")
 shapefile.converted <- spTransform(shapefile, CRS("+proj=longlat +datum=WGS84"))
-p3 <- p2 + geom_polygon(aes(x = long, y = lat, group=group), alpha=.2, 
+p3 <- p2 + geom_polygon(aes(x = long, y = lat, group=group), alpha=.2, fill="black", 
                  data = shapefile.converted) + 
     coord_cartesian(xlim=c(-87.96, -87.5), ylim=c(41.62, 42.05))
-ggsave(plot=p3, "foodborne_chicago_submissions3.png", height=5, width=5)
+ggsave(plot=p3, "foodborne_p3.png", height=5, width=5)
+
+# now try with ggmaps and cloudmade
+cloudmadekey <- scan("~/cn/personal/keys/cloudmadekey.txt", what="character")
+p4 <- qmap("chicago", source="cloudmade", api_key=cloudmadekey, maptype=108995)+
+      geom_polygon(aes(x = long, y = lat, group=group), alpha=.2, fill="black", 
+               data = shapefile.converted) +
+      geom_point(data=df2, aes(x=lng, y=lat)) +
+      coord_cartesian(xlim=c(-87.96, -87.5), ylim=c(41.62, 42.05))
+ggsave(plot=p4, "foodborne_p4.png", height=5, width=5)
+#90875    # alt styles
+#108995
+#82658
