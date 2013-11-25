@@ -3,6 +3,7 @@
 # This file reads in the csv file from the foodborne chicago admin page
 # and uses an online geocoding service to get lat-lng data from the 
 # restaurant address.
+# Business license code from Chicago data portal: http://goo.gl/kq2OP
 #############################################################################
 
 library(RCurl)
@@ -25,3 +26,16 @@ for(i in 1:nrow(df)){
   df$lat[i] <- results$lat
   Sys.sleep(.35) # can't ask google for these too fast...
 }
+
+# look at where the business licenses are...
+# 17mb, takes a minute or two to download this way
+# luckily for us, Chicago has already geocoded these
+lic <- read.csv("http://data.cityofchicago.org/views/uupf-x98q/rows.csv",
+                        stringsAsFactors = F) 
+names(lic) <- tolower(names(lic))
+# let's worry about just the food places...
+lic <- subset(lic, license.description %in% c("Retail Food Establishment", 
+              "Retail Food Est.-Supplemental License for Dog-Friendly Areas",
+              "Tavern"))
+# some aren't geocoded... just remove them for now
+lic <- subset(lic, !is.na(latitude) | !is.na(longitude))
