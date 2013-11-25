@@ -2,7 +2,8 @@
 #############################################################################
 # This file creates a borderless map of Chicago using the openstreetmap tiles
 # and overlays the points from the submissions to foodborne chicago
-# a file called foodborne_chicago_submissions.png is created
+# a file called foodborne_p1.png is created
+# Also, 2 files created using ggmap of the same thing and one from cloudmade
 # Chicago city shapefiles downloaded from: http://goo.gl/8bHX1l
 #############################################################################
 
