@@ -12,6 +12,8 @@ library(OpenStreetMap)
 library(grid)
 library(ggmap)
 library(rgdal)
+library(rCharts)
+
 # run if you haven't run it already...
 if(!exists("df")){source("read_and_geocode.R")} 
 
@@ -37,7 +39,7 @@ grid.draw(gt[ge$t:ge$b, ge$l:ge$r])
 dev.off()
 
 # same graph using ggmap package with google maps
-p2 <- qmap("chicago", darken=.1) + geom_point(data=df2, aes(x=lng, y=lat)) +
+p2 <- qmap("chicago", darken=.1, zoom=10) + geom_point(data=df2, aes(x=lng, y=lat), size=1.5, alpha=.8) +
     coord_cartesian(xlim=c(-87.96, -87.5), ylim=c(41.62, 42.05))
 ggsave(plot=p2, "foodborne_p2.png", height=5, width=5)
 
@@ -49,14 +51,15 @@ p3 <- p2 + geom_polygon(aes(x = long, y = lat, group=group), alpha=.2, fill="bla
     coord_cartesian(xlim=c(-87.96, -87.5), ylim=c(41.62, 42.05))
 ggsave(plot=p3, "foodborne_p3.png", height=5, width=5)
 
-# now try with ggmaps and cloudmade - API key needed for this one
-cloudmadekey <- scan("~/cn/personal/keys/cloudmadekey.txt", what="character")
-p4 <- qmap("chicago", source="cloudmade", api_key=cloudmadekey, maptype=108995)+
-      geom_polygon(aes(x = long, y = lat, group=group), alpha=.2, fill="black", 
-               data = shapefile.converted) +
-      geom_point(data=df2, aes(x=lng, y=lat)) +
-      coord_cartesian(xlim=c(-87.96, -87.5), ylim=c(41.62, 42.05))
-ggsave(plot=p4, "foodborne_p4.png", height=5, width=5)
-#90875    # alt styles
-#108995
-#82658
+# create an interactive leaflet version...
+map.food <- Leaflet$new()
+map.food$setView(c(41.85, -87.678), zoom = 9)
+for(i in 1:nrow(df2)){
+  map.food$marker(c(df2$lat[i], df2$lng[i]), 
+                  bindPopup = paste0("<p>",df2$created.at[i], "<br>", 
+                                    df2$restaurant.address[i],"</p>"))
+}
+sink("tmp.txt")
+map.food$print()
+sink()
+map.food$publish('Foodbornechi Map', host = 'gist')
