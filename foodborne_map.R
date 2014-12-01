@@ -13,6 +13,7 @@ library(grid)
 library(ggmap)
 library(rgdal)
 library(rCharts)
+library(rMaps)
 
 # run if you haven't run it already...
 if(!exists("df")){source("read_and_geocode.R")} 
@@ -59,7 +60,4 @@ for(i in 1:nrow(df2)){
                   bindPopup = paste0("<p>",df2$created.at[i], "<br>", 
                                     df2$restaurant.address[i],"</p>"))
 }
-sink("tmp.txt")
-map.food$print()
-sink()
 map.food$publish('Foodbornechi Map', host = 'gist')
