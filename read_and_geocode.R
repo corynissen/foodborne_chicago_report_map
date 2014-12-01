@@ -10,7 +10,7 @@ library(RCurl)
 library(RJSONIO)
 library(ggmap)
 
-df <- read.csv("data/submissions-2014-06-05.csv", stringsAsFactors=F)
+df <- read.csv("data/submissions-2014-12-01.csv", stringsAsFactors=F)
 names(df) <- tolower(names(df))
 # order by id, or basically date
 df <- df[order(df$id),]
@@ -27,25 +27,3 @@ for(i in 1:nrow(df)){
   print(paste("on address number", i))
   Sys.sleep(.35) # can't ask google for these too fast...
 }
-
-# look at where the business licenses are...
-# 17mb, takes a minute or two to download this way
-# luckily for us, Chicago has already geocoded these
-lic <- read.csv("http://data.cityofchicago.org/views/uupf-x98q/rows.csv",
-                        stringsAsFactors = F) 
-names(lic) <- tolower(names(lic))
-# let's worry about just the food places...
-lic <- subset(lic, license.description %in% c("Retail Food Establishment", 
-              "Retail Food Est.-Supplemental License for Dog-Friendly Areas",
-              "Tavern"))
-# some aren't geocoded... just remove them for now
-lic <- subset(lic, !is.na(latitude) | !is.na(longitude))
-
-# take a look at the inspection data... it has restaurants w/ risk level
-# data from Jan 1 2010 to present
-lic2 <- read.csv("http://data.cityofchicago.org/views/4ijn-s7e5/rows.csv",
-                 stringsAsFactors = F)
-names(lic2) <- tolower(names(lic2))
-# let's look at the unique license numbers with valid lat lng
-lic2 <- subset(lic2, !is.na(latitude) | !is.na(longitude))
-lic2 <- subset(lic2, !duplicated(license..))
